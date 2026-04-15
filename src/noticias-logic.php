@@ -1,49 +1,58 @@
 <?php
+// src/noticias-logic.php
 
-function obtenerNoticias($conn)
-{
-    // Usamos el campo 'fecha_creacion' que definimos en la base de datos
+function obtenerNoticias($conn) {
     $sql = "SELECT * FROM noticias ORDER BY fecha_creacion DESC";
     return mysqli_query($conn, $sql);
 }
 
-function insertarNoticia($conn, $titulo, $contenido)
-{
-    $errores = [];
+function obtenerNoticiasPublicas($conn) {
+    $sql = "SELECT * FROM noticias WHERE estado = 'Publicada' ORDER BY fecha_creacion DESC";
+    return mysqli_query($conn, $sql);
+}
 
-    // 1. Limpieza de datos (Evita espacios vacíos que rompan validaciones)
+function obtenerNoticiaPorId($conn, $id) {
+    $stmt = $conn->prepare("SELECT * FROM noticias WHERE id = ? AND estado = 'Publicada'");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+function insertarNoticia($conn, $titulo, $contenido, $autor_id) {
+    $errores = [];
     $titulo = trim($titulo);
     $contenido = trim($contenido);
 
-    // 2. Validaciones de Reglas de Negocio (Lo que el tester va a buscar)
     if (strlen($titulo) < 10 || strlen($titulo) > 100) {
         $errores[] = "El título debe tener entre 10 y 100 caracteres.";
     }
-
     if (strlen($contenido) < 50) {
         $errores[] = "La descripción debe tener al menos 50 caracteres.";
     }
 
-    // 3. Validación de Título Único (Regla clave del TP)
-    $stmt_check = $conn->prepare("SELECT id FROM noticias WHERE titulo = ? AND estado = 'Publicada'");
-    $stmt_check->bind_param("s", $titulo);
-    $stmt_check->execute();
-    $result = $stmt_check->get_result();
-    if ($result->num_rows > 0) {
-        $errores[] = "Ya existe una noticia publicada con ese mismo título.";
-    }
-
-    // 4. Si no hay errores, insertamos
     if (empty($errores)) {
-        // En noticias-logic.php, dentro de insertarNoticia():
-        $stmt = $conn->prepare("INSERT INTO noticias (titulo, descripcion, estado, autor_id) VALUES (?, ?, 'Borrador', 1)");
-        $stmt->bind_param("ss", $titulo, $contenido);
+        // La tabla ahora permite NULL en imagen y fecha_publicacion gracias al ALTER TABLE
+        $stmt = $conn->prepare("INSERT INTO noticias (titulo, descripcion, estado, autor_id) VALUES (?, ?, 'Borrador', ?)");
+        $stmt->bind_param("ssi", $titulo, $contenido, $autor_id);
+        
         if ($stmt->execute()) {
-            return true; // Éxito
+            return true;
         } else {
-            $errores[] = "Error crítico en la base de datos.";
+            return ["Error en la base de datos: " . $stmt->error];
         }
     }
+    return $errores;
+}
 
-    return $errores; // Devolvemos la lista de fallos
+/**
+ * Trae las noticias que necesitan revisión (para el Validador)
+ */
+function obtenerNoticiasPendientes($conn) {
+    // Hacemos un JOIN para saber quién escribió la noticia
+    $sql = "SELECT n.*, u.nombre as nombre_autor 
+            FROM noticias n 
+            JOIN usuarios u ON n.autor_id = u.id 
+            WHERE n.estado = 'Borrador' OR n.estado = 'Lista para Validación'
+            ORDER BY n.fecha_creacion DESC";
+    return mysqli_query($conn, $sql);
 }

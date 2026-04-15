@@ -1,5 +1,5 @@
 <?php
-define('BASE_URL', 'http://localhost/tu-proyecto/public');
+define('BASE_URL', 'http://localhost/noticias-institucionales/public');
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');

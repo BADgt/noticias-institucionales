@@ -1,8 +1,8 @@
-</main>
+</div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<footer>
-    <p>© 2026 - Trabajo Integrador</p>
-</footer>
+<script>
+    // Aquí podrías agregar lógica para colapsar el sidebar en pantallas chicas
+</script>
 
 </body>
 </html>

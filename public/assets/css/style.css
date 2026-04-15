@@ -1,0 +1,119 @@
+:root {
+    --primary-green: #84cc16;   /* Verde Lima */
+    --dark-green: #4d7c0f;      /* Verde Manzana fuerte para textos */
+    --light-green: #ecfccb;     /* Verde muy clarito para fondos de badges */
+    --body-bg: #f8fafc;
+    --text-main: #1e293b;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-main);
+}
+
+/* El "Hero" de bienvenida ahora es verde */
+.hero-box {
+    background: linear-gradient(135deg, #a3e635 0%, #65a30d 100%);
+    border-radius: 2rem;
+    padding: 5rem 2rem;
+    color: white;
+    margin-bottom: 3rem;
+    box-shadow: 0 20px 25px -5px rgba(132, 204, 22, 0.2);
+}
+
+/* --- ESTILOS DE TARJETAS --- */
+
+/* Esta es para las noticias (SÍ tiene movimiento suave) */
+.card-news {
+    background: white;
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.card-news:hover {
+    transform: translateY(-8px); /* Solo las noticias se mueven */
+}
+
+/* Esta es para Login y Registro (TOTALMENTE ESTÁTICA) */
+.card-auth {
+    background: white;
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem;
+    /* No tiene la propiedad 'transition' ni 'transform' */
+}
+
+/* Aseguramos que aunque le pases el mouse, no haga nada */
+.card-auth:hover {
+    transform: none !important;
+}
+
+/* --- ESTILOS DE INPUTS --- */
+.form-control {
+    border: 1px solid #e2e8f0;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(132, 204, 22, 0.1);
+}
+
+/* El texto desaparece al hacer clic */
+input:focus::placeholder {
+    color: transparent;
+}
+/* Botón personalizado verde */
+.btn-chipi {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-chipi:hover {
+    background-color: var(--dark-green);
+    color: white;
+    transform: scale(1.05);
+}
+
+.text-chipi {
+    color: var(--primary-green) !important;
+}
+
+.dropdown-item {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--light-green);
+    color: var(--dark-green);
+}
+
+/* Color y opacidad para el texto de sugerencia (placeholder) */
+::placeholder {
+    color: #94a3b8 !important; /* Un gris azulado suave */
+    opacity: 0.7 !important;
+    font-weight: 400;
+}
+
+/* EFECTO PRO: Que el texto desaparezca AL HACER CLIC (on focus) */
+input:focus::placeholder {
+    color: transparent !important;
+}
+
+/* Suavizar el borde verde cuando escribimos */
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.25rem rgba(132, 204, 22, 0.25);
+    outline: 0;
+}
