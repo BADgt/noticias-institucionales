@@ -1,58 +1,92 @@
 <?php
 // src/noticias-logic.php
 
-function obtenerNoticias($conn) {
-    $sql = "SELECT * FROM noticias ORDER BY fecha_creacion DESC";
-    return mysqli_query($conn, $sql);
-}
-
 function obtenerNoticiasPublicas($conn) {
-    $sql = "SELECT * FROM noticias WHERE estado = 'Publicada' ORDER BY fecha_creacion DESC";
+    $sql = "SELECT n.*, u.nombre, u.apellido FROM noticias n 
+            JOIN usuarios u ON n.autor_id = u.id 
+            WHERE n.estado = 'Publicada' ORDER BY n.fecha_publicacion DESC";
     return mysqli_query($conn, $sql);
 }
 
 function obtenerNoticiaPorId($conn, $id) {
-    $stmt = $conn->prepare("SELECT * FROM noticias WHERE id = ? AND estado = 'Publicada'");
+    $stmt = $conn->prepare("SELECT n.*, u.nombre, u.apellido FROM noticias n 
+                            JOIN usuarios u ON n.autor_id = u.id 
+                            WHERE n.id = ? AND n.estado = 'Publicada'");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
 }
 
-function insertarNoticia($conn, $titulo, $contenido, $autor_id) {
-    $errores = [];
-    $titulo = trim($titulo);
-    $contenido = trim($contenido);
+function insertarNoticiaCompleta($conn, $titulo, $resumen, $contenido, $imagen_file, $estado, $autor_id) {
+    $nombre_imagen = null;
+    if (isset($imagen_file) && $imagen_file['error'] === 0) {
+        $ext = pathinfo($imagen_file['name'], PATHINFO_EXTENSION);
+        $nombre_imagen = time() . "_" . uniqid() . "." . $ext;
+        if (!is_dir('uploads')) { mkdir('uploads', 0777, true); }
+        move_uploaded_file($imagen_file['tmp_name'], "uploads/" . $nombre_imagen);
+    }
+    $stmt = $conn->prepare("INSERT INTO noticias (titulo, resumen, descripcion, imagen, estado, autor_id) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssi", $titulo, $resumen, $contenido, $nombre_imagen, $estado, $autor_id);
+    return $stmt->execute();
+}
 
-    if (strlen($titulo) < 10 || strlen($titulo) > 100) {
-        $errores[] = "El título debe tener entre 10 y 100 caracteres.";
-    }
-    if (strlen($contenido) < 50) {
-        $errores[] = "La descripción debe tener al menos 50 caracteres.";
-    }
+function obtenerMisBorradores($conn, $autor_id) {
+    $stmt = $conn->prepare("SELECT * FROM noticias WHERE autor_id = ? AND estado = 'Borrador' ORDER BY fecha_creacion DESC");
+    $stmt->bind_param("i", $autor_id);
+    $stmt->execute();
+    return $stmt->get_result();
+}
 
-    if (empty($errores)) {
-        // La tabla ahora permite NULL en imagen y fecha_publicacion gracias al ALTER TABLE
-        $stmt = $conn->prepare("INSERT INTO noticias (titulo, descripcion, estado, autor_id) VALUES (?, ?, 'Borrador', ?)");
-        $stmt->bind_param("ssi", $titulo, $contenido, $autor_id);
-        
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            return ["Error en la base de datos: " . $stmt->error];
-        }
+function obtenerNoticiaParaEditar($conn, $id, $autor_id = 0) {
+    if ($autor_id > 0) {
+        $stmt = $conn->prepare("SELECT n.*, u.nombre, u.apellido FROM noticias n JOIN usuarios u ON n.autor_id = u.id WHERE n.id = ? AND n.autor_id = ?");
+        $stmt->bind_param("ii", $id, $autor_id);
+    } else {
+        $stmt = $conn->prepare("SELECT n.*, u.nombre, u.apellido FROM noticias n JOIN usuarios u ON n.autor_id = u.id WHERE n.id = ?");
+        $stmt->bind_param("i", $id);
     }
-    return $errores;
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+function obtenerNoticiasPendientes($conn) {
+    $sql = "SELECT n.*, u.nombre, u.apellido FROM noticias n JOIN usuarios u ON n.autor_id = u.id WHERE n.estado = 'Lista para Validación' ORDER BY n.fecha_creacion DESC";
+    return mysqli_query($conn, $sql);
+}
+
+function cambiarEstadoNoticia($conn, $id, $nuevo_estado, $usuario_id) {
+    $stmt = $conn->prepare("UPDATE noticias SET estado = ?, fecha_publicacion = IF(? = 'Publicada', NOW(), fecha_publicacion) WHERE id = ?");
+    $stmt->bind_param("ssi", $nuevo_estado, $nuevo_estado, $id);
+    return $stmt->execute();
+}
+
+function obtenerHistorialUsuario($conn, $usuario_id) {
+    $stmt = $conn->prepare("SELECT * FROM noticias WHERE autor_id = ? ORDER BY fecha_creacion DESC LIMIT 5");
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    return $stmt->get_result();
 }
 
 /**
- * Trae las noticias que necesitan revisión (para el Validador)
+ * Actualiza una noticia existente (mantiene la imagen si no se sube una nueva)
  */
-function obtenerNoticiasPendientes($conn) {
-    // Hacemos un JOIN para saber quién escribió la noticia
-    $sql = "SELECT n.*, u.nombre as nombre_autor 
-            FROM noticias n 
-            JOIN usuarios u ON n.autor_id = u.id 
-            WHERE n.estado = 'Borrador' OR n.estado = 'Lista para Validación'
-            ORDER BY n.fecha_creacion DESC";
-    return mysqli_query($conn, $sql);
+function actualizarNoticiaCompleta($conn, $id, $titulo, $resumen, $contenido, $imagen_file, $estado) {
+    $nombre_imagen = null;
+
+    // 1. Verificamos si subió una foto nueva
+    if (isset($imagen_file) && $imagen_file['error'] === 0) {
+        $ext = pathinfo($imagen_file['name'], PATHINFO_EXTENSION);
+        $nombre_imagen = time() . "_" . uniqid() . "." . $ext;
+        move_uploaded_file($imagen_file['tmp_name'], "uploads/" . $nombre_imagen);
+        
+        // Si hay foto nueva, actualizamos todo incluido el campo imagen
+        $stmt = $conn->prepare("UPDATE noticias SET titulo = ?, resumen = ?, descripcion = ?, imagen = ?, estado = ? WHERE id = ?");
+        $stmt->bind_param("sssssi", $titulo, $resumen, $contenido, $nombre_imagen, $estado, $id);
+    } else {
+        // Si NO hay foto nueva, actualizamos todo MENOS el campo imagen
+        $stmt = $conn->prepare("UPDATE noticias SET titulo = ?, resumen = ?, descripcion = ?, estado = ? WHERE id = ?");
+        $stmt->bind_param("ssssi", $titulo, $resumen, $contenido, $estado, $id);
+    }
+    
+    return $stmt->execute();
 }

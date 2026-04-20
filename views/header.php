@@ -25,11 +25,14 @@
                 <li class="nav-item"><a class="nav-link px-3 fw-medium" href="?page=noticias">Noticias</a></li>
                 
                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                    <li class="nav-item ms-lg-3">
-                        <a class="btn btn-chipi rounded-pill px-4 text-white shadow-sm fw-bold" href="?page=nueva-noticia">
-                            + Redactar
-                        </a>
-                    </li>
+                    <?php if (in_array(1, $_SESSION['usuario_roles'])): ?>
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-chipi rounded-pill px-4 text-white shadow-sm fw-bold" href="?page=nueva-noticia">
+                                + Redactar
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <li class="nav-item dropdown ms-3">
                         <a class="nav-link p-0" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
                             <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
@@ -40,7 +43,11 @@
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end rounded-4 border-0 shadow mt-3 py-2">
-                            <li><h6 class="dropdown-header small text-uppercase opacity-50">Hola, <?= e($_SESSION['usuario_nombre']) ?></h6></li>
+                            <li>
+                                <h6 class="dropdown-header small text-uppercase opacity-50">
+                                    Hola, <?= e($_SESSION['usuario_nombre']) ?> <?= e($_SESSION['usuario_apellido']) ?>
+                                </h6>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="?page=perfil">Mi Perfil</a></li>
                             <li><a class="dropdown-item text-danger fw-bold" href="?page=logout">Cerrar Sesión</a></li>

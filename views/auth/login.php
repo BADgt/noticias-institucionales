@@ -18,7 +18,7 @@
             <form method="POST" action="?page=procesar-login">
                 <div class="mb-3">
                     <label class="form-label fw-bold small text-secondary">Email</label>
-                    <input type="email" name="email" class="form-control rounded-pill px-3 py-2" placeholder="usuario@unsl.edu.ar" required>
+                    <input type="email" name="email" class="form-control rounded-pill px-3 py-2" placeholder="usuario@email.com" required>
                 </div>
                 <div class="mb-4">
                     <label class="form-label fw-bold small text-secondary">Contraseña</label>

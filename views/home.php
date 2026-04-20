@@ -1,79 +1,81 @@
+<?php 
+    $roles = $_SESSION['usuario_roles'] ?? []; 
+    $es_editor = in_array(1, $roles);
+    $es_validador = in_array(2, $roles);
+?>
 
-<?php if (isset($_SESSION['usuario_id'])): ?>
-    <div class="p-5 rounded-5 bg-white shadow-sm border border-light text-center mb-5">
-        <h1 class="fw-bold display-4">¡Hola, <?= e($_SESSION['usuario_nombre']) ?>! 🍏</h1>
-        <p class="lead text-secondary mb-4">Panel de gestión de Chipi News</p>
+<div class="container py-4">
+    <div class="hero-box text-center mb-5 p-5 rounded-5 shadow-lg" 
+         style="background: linear-gradient(135deg, #1e3d1a 0%, #43a047 100%); border: none;">
+        
+        <h1 class="display-3 fw-bold mb-3 text-white">Chipi News 🍏</h1>
+        <p class="lead opacity-90 mb-4 fw-medium text-white">
+            <?= isset($_SESSION['usuario_id']) ? "¡Hola de nuevo, " . e($_SESSION['usuario_nombre']) . "! Tenés el control del portal." : "Las noticias de la UNSL, frescas y verificadas." ?>
+        </p>
         
         <div class="d-flex justify-content-center gap-3">
-            <a href="?page=nueva-noticia" class="btn btn-chipi btn-lg rounded-pill px-5 shadow-sm text-white">Redactar Noticia</a>
-            <a href="?page=noticias" class="btn btn-outline-secondary btn-lg rounded-pill px-4">Ver Portal Público</a>
+            <a href="?page=noticias" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-chipi shadow">Explorar Novedades</a>
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+                <a href="?page=perfil" class="btn btn-outline-light btn-lg rounded-pill px-4">Mi Perfil</a>
+            <?php endif; ?>
         </div>
     </div>
 
-    <?php $rol = $_SESSION['usuario_rol'] ?? 0; ?>
-
-    <?php if ($rol == 2): ?>
-        <div class="alert alert-info rounded-4 border-0 shadow-sm p-4 mb-5 d-flex align-items-center justify-content-between">
-            <div>
-                <h4 class="fw-bold mb-1">Panel de Validador 🛡️</h4>
-                <p class="mb-0 text-secondary">Tenés noticias pendientes de revisión para publicar.</p>
+    <?php if (isset($_SESSION['usuario_id'])): ?>
+        <div class="row g-4">
+            <?php if ($es_editor): ?>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-5 p-4 bg-white transition-hover">
+                    <div class="d-flex align-items-start">
+                        <div class="bg-chipi-light rounded-4 p-3 me-3">
+                            <span class="fs-1">📝</span>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold text-dark mb-2">Redacción</h3>
+                            <p class="text-secondary mb-4">Escribí nuevas historias, gestioná borradores y mantené informada a la comunidad.</p>
+                            <div class="d-flex gap-2">
+                                <a href="?page=nueva-noticia" class="btn btn-chipi text-white rounded-pill px-4 fw-bold">Nueva Noticia</a>
+                                <a href="?page=mis-borradores" class="btn btn-light rounded-pill px-3 border">Mis Borradores</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <a href="?page=validar-noticias" class="btn btn-primary rounded-pill px-4 fw-bold">Revisar Ahora</a>
+            <?php endif; ?>
+
+            <?php if ($es_validador): ?>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-5 p-4 bg-white transition-hover">
+                    <div class="d-flex align-items-start">
+                        <div class="bg-primary-light rounded-4 p-3 me-3">
+                            <span class="fs-1">🛡️</span>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold text-dark mb-2">Validación</h3>
+                            <p class="text-secondary mb-4">Revisá las propuestas de los editores y decidí qué noticias se publican hoy.</p>
+                            <a href="?page=validar-noticias" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm">Revisar Ahora</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
+</div>
 
-    <div class="row g-4 text-center">
-        <div class="col-md-4">
-            <div class="card-auth p-4 h-100">
-                <h3 class="fw-bold text-chipi">📝</h3>
-                <h5 class="fw-bold">Mis Noticias</h5>
-                <p class="text-muted small">Gestioná tu contenido.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card-auth p-4 h-100">
-                <h3 class="fw-bold text-chipi">⏳</h3>
-                <h5 class="fw-bold">Pendientes</h5>
-                <p class="text-muted small">Esperando validación.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card-auth p-4 h-100">
-                <h3 class="fw-bold text-chipi">🍏</h3>
-                <h5 class="fw-bold">Tips de Chipi</h5>
-                <p class="text-muted small">Usá títulos llamativos.</p>
-            </div>
-        </div>
-    </div>
+<style>
+    /* Estilos para mantener la consistencia */
+    .bg-chipi-light { background-color: #f1f8e9; }
+    .bg-primary-light { background-color: #e3f2fd; }
+    
+    /* Animación suave para las tarjetas */
+    .transition-hover {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+    }
 
-<?php else: ?>
-    <div class="hero-box text-center mb-5">
-        <h1 class="display-3 fw-bold mb-3 text-white">Informate con Chipi News</h1>
-        <p class="lead opacity-90 mb-4 fw-medium text-white">Las noticias de la UNSL, frescas y verificadas.</p>
-        <a href="?page=noticias" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-chipi shadow">Explorar Novedades</a>
-    </div>
-
-    <div class="row g-4 text-center">
-        <div class="col-md-4">
-            <div class="p-4 bg-white rounded-4 shadow-sm h-100 border border-light">
-                <div class="h1 mb-3">🍏</div>
-                <h4 class="fw-bold">Fresco</h4>
-                <p class="text-muted small">Diseño moderno pensado para la lectura rápida.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-4 bg-white rounded-4 shadow-sm h-100 border border-light">
-                <div class="h1 mb-3">✅</div>
-                <h4 class="fw-bold">Verificado</h4>
-                <p class="text-muted small">Contenido revisado por el equipo institucional.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-4 bg-white rounded-4 shadow-sm h-100 border border-light">
-                <div class="h1 mb-3">🚀</div>
-                <h4 class="fw-bold">Rápido</h4>
-                <p class="text-muted small">Enterate de todo lo que pasa al instante.</p>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
+    /* Respetamos tus colores originales de los botones en el style.css */
+</style>
