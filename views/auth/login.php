@@ -1,6 +1,7 @@
 <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="col-md-5">
-        <div class="card-auth"> <div class="text-center mb-4">
+        <div class="card-auth">
+            <div class="text-center mb-4">
                 <h2 class="fw-bold">Chipi <span class="text-chipi">치피</span> News</h2>
                 <p class="text-muted small">Ingresá para gestionar noticias</p>
             </div>
@@ -20,9 +21,15 @@
                     <label class="form-label fw-bold small text-secondary">Email</label>
                     <input type="email" name="email" class="form-control rounded-pill px-3 py-2" placeholder="usuario@email.com" required>
                 </div>
-                <div class="mb-4">
+                <div class="mb-3">
                     <label class="form-label fw-bold small text-secondary">Contraseña</label>
-                    <input type="password" name="password" class="form-control rounded-pill px-3 py-2" placeholder="Tu clave secreta" required>
+                    <div class="input-group">
+                        <input type="password" name="password" id="passwordInput" class="form-control rounded-start-4 border-end-0" required>
+
+                        <span class="input-group-text rounded-end-4 bg-white px-3" id="btnTogglePassword" style="cursor: pointer; border-color: #dee2e6;">
+                            <i class="bi bi-eye text-muted" id="eyeIcon"></i>
+                        </span>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-chipi w-100 rounded-pill py-2 text-white fw-bold shadow-sm">
                     Iniciar Sesión

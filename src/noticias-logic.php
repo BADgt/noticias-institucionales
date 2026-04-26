@@ -2,16 +2,21 @@
 // src/noticias-logic.php
 
 function obtenerNoticiasPublicas($conn) {
-    $sql = "SELECT n.*, u.nombre, u.apellido FROM noticias n 
+    $sql = "SELECT n.*, u.nombre, u.apellido 
+            FROM noticias n 
             JOIN usuarios u ON n.autor_id = u.id 
-            WHERE n.estado = 'Publicada' ORDER BY n.fecha_publicacion DESC";
+            WHERE n.estado = 'Publicada' 
+            ORDER BY n.fecha_publicacion DESC";
     return mysqli_query($conn, $sql);
 }
 
+// ... (Acá abajo deberías tener tus otras funciones que ya tenías, como insertarNoticiaCompleta o obtenerNoticiaParaEditar. No las borres) ...
 function obtenerNoticiaPorId($conn, $id) {
-    $stmt = $conn->prepare("SELECT n.*, u.nombre, u.apellido FROM noticias n 
+    // Le quitamos el AND n.estado = 'Publicada' para que el autor pueda ver sus borradores o anuladas
+    $stmt = $conn->prepare("SELECT n.*, u.nombre, u.apellido 
+                            FROM noticias n 
                             JOIN usuarios u ON n.autor_id = u.id 
-                            WHERE n.id = ? AND n.estado = 'Publicada'");
+                            WHERE n.id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
