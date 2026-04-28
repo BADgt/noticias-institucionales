@@ -24,3 +24,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     togglePassword();
 });
+function previewImage(input) {
+    const preview = document.getElementById('img-preview');
+    const placeholder = document.getElementById('placeholder-content');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            // Ponemos la imagen que acabamos de elegir
+            preview.src = e.target.result;
+            
+            // EL TRUCO: Le quitamos la clase d-none de Bootstrap
+            preview.classList.remove('d-none');
+            
+            // Nos aseguramos que se vea (por si las dudas)
+            preview.style.display = 'block'; 
+            
+            // Ocultamos el "+" para que no quede abajo de la foto
+            if (placeholder) {
+                placeholder.classList.add('d-none');
+            }
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}

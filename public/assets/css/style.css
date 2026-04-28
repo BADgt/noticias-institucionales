@@ -125,3 +125,48 @@ body {
 .bg-chipi-light {
     background-color: var(--chipi-light);
 }
+
+/* --- DISEÑO DE CARGA DE IMAGEN --- */
+.image-upload-placeholder i {
+    font-size: 2.5rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+}
+
+.image-upload-placeholder p {
+    color: #64748b;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Previsualización de la imagen */
+#preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none; /* Se muestra por JS */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.image-upload-placeholder {
+    width: 100%;
+    height: 250px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.image-upload-placeholder:hover {
+    border-color: var(--chipi-apple);
+    background-color: var(--chipi-light);
+}
