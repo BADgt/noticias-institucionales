@@ -32,8 +32,8 @@
             <h5 class="fw-bold mb-3">Panel de Decisiones 🛡️</h5>
             <form action="?page=procesar-revision" method="POST" class="d-flex flex-wrap gap-2">
                 <input type="hidden" name="noticia_id" value="<?= $noticia['id'] ?>">
-                <button type="submit" name="estado" value="Publicada" class="btn btn-success rounded-pill px-4 fw-bold">Aprobar y Publicar</button>
-                <button type="submit" name="estado" value="Para Corrección" class="btn btn-warning rounded-pill px-4 fw-bold">Pedir Corrección</button>
+                <button type="submit" name="estado" value="Publicada" class="btn btn-success rounded-pill px-4 fw-bold">Aprobar & Publicar</button>
+                <button type="submit" name="estado" value="Para Corrección" class="btn btn-warning rounded-pill px-4 fw-bold">Mandar a Corregir</button>
                 <button type="submit" name="estado" value="Anulada" class="btn btn-danger rounded-pill px-4 fw-bold">Anular</button>
             </form>
         </div>

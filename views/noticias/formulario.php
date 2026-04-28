@@ -11,6 +11,16 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
             <a href="?page=mis-borradores" class="btn btn-light rounded-pill px-3 border shadow-sm">← Mis Borradores</a>
         </div>
 
+        <?php if ($es_edicion && $noticia['estado'] === 'Para Corrección'): ?>
+            <div class="alert alert-warning border-0 shadow-sm rounded-4 p-4 mb-4 d-flex align-items-center">
+                <span class="fs-2 me-3">✍️</span>
+                <div>
+                    <h5 class="fw-bold mb-1">¡Hola <?= e($_SESSION['usuario_nombre']) ?>! Hay ajustes pendientes</h5>
+                    <p class="mb-0 small text-secondary">El validador revisó tu noticia y te la devolvió para que le hagas unos retoques antes de publicarla.</p>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="card border-0 shadow-sm rounded-5 p-5 bg-white">
             <h2 class="fw-bold mb-4"><?= $titulo_vista ?></h2>
 
@@ -82,7 +92,7 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
                             Guardar Borrador
                         </button>
                         <button type="submit" name="accion" value="revisar" class="btn btn-chipi text-white rounded-pill px-4 fw-bold shadow-sm">
-                            Mandar a Revisar 🚀
+                            Mandar a Revisar 
                         </button>
                     </div>
                 </div>

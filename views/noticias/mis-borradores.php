@@ -4,7 +4,7 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0 text-dark">Mis Borradores <span class="text-chipi">치피</span></h2>
+        <h2 class="fw-bold m-0 text-dark">Mis Borradores <span class="text-chipi"></span></h2>
         <a href="?page=nueva-noticia" class="btn btn-chipi text-white rounded-pill px-4 fw-bold shadow-sm">+ Nuevo Borrador</a>
     </div>
 
@@ -14,22 +14,30 @@
                 <thead class="bg-chipi text-white">
                     <tr>
                         <th class="ps-4 py-3 border-0">Título</th>
+                        <th class="py-3 border-0">Estado</th>
                         <th class="py-3 border-0">Última Modificación</th>
                         <th class="text-end pe-4 py-3 border-0">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (mysqli_num_rows($borradores) > 0): ?>
-                        <?php while($b = mysqli_fetch_assoc($borradores)): ?>
-                        <tr>
-                            <td class="ps-4 py-3 fw-bold text-dark"><?= e($b['titulo']) ?></td>
-                            <td class="text-secondary"><?= date('d/m/Y H:i', strtotime($b['fecha_creacion'])) ?></td>
-                            <td class="text-end pe-4">
-                                <a href="?page=editar-noticia&id=<?= $b['id'] ?>" class="btn btn-sm btn-outline-chipi rounded-pill px-3 fw-bold">
-                                    Continuar Editando
-                                </a>
-                            </td>
-                        </tr>
+                        <?php while ($b = mysqli_fetch_assoc($borradores)): ?>
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold text-dark"><?= e($b['titulo']) ?></td>
+                                <td>
+                                    <?php if ($b['estado'] === 'Para Corrección'): ?>
+                                        <span class="badge rounded-pill bg-warning text-dark px-3">Para corregir</span>
+                                    <?php else: ?>
+                                        <span class="badge rounded-pill bg-light text-secondary border px-3">Borrador</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-secondary"><?= date('d/m/Y H:i', strtotime($b['fecha_creacion'])) ?></td>
+                                <td class="text-end pe-4">
+                                    <a href="?page=editar-noticia&id=<?= $b['id'] ?>" class="btn btn-sm btn-outline-chipi rounded-pill px-3 fw-bold">
+                                        Continuar Editando
+                                    </a>
+                                </td>
+                            </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>

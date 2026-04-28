@@ -36,7 +36,11 @@ function insertarNoticiaCompleta($conn, $titulo, $resumen, $contenido, $imagen_f
 }
 
 function obtenerMisBorradores($conn, $autor_id) {
-    $stmt = $conn->prepare("SELECT * FROM noticias WHERE autor_id = ? AND estado = 'Borrador' ORDER BY fecha_creacion DESC");
+    // Ahora buscamos tanto 'Borrador' como 'Para Corrección'
+    $stmt = $conn->prepare("SELECT * FROM noticias 
+                            WHERE autor_id = ? 
+                            AND (estado = 'Borrador' OR estado = 'Para Corrección') 
+                            ORDER BY fecha_creacion DESC");
     $stmt->bind_param("i", $autor_id);
     $stmt->execute();
     return $stmt->get_result();
