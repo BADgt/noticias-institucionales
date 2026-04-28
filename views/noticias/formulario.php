@@ -33,14 +33,23 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
                 <div class="mb-4">
                     <label class="form-label fw-bold">Imagen de Portada</label>
 
+                    <input type="hidden" name="borrar_imagen_actual" id="borrar_imagen_actual" value="0">
+
                     <div class="image-upload-placeholder" onclick="document.getElementById('noticia-imagen').click();">
 
+                        <div id="btn-clean-preview"
+                            class="image-preview-cleaner <?= ($es_edicion && !empty($noticia['imagen'])) ? '' : 'd-none' ?>"
+                            onclick="removePreviewImage(event)"
+                            title="Quitar imagen">
+                            <span>🗑️</span>
+                        </div>
+
                         <img id="img-preview"
-                            src="<?= ($es_edicion && $noticia['imagen']) ? 'uploads/' . $noticia['imagen'] : '#' ?>"
-                            class="<?= ($es_edicion && $noticia['imagen']) ? '' : 'd-none' ?>"
+                            src="<?= ($es_edicion && !empty($noticia['imagen'])) ? 'uploads/' . $noticia['imagen'] : '#' ?>"
+                            class="<?= ($es_edicion && !empty($noticia['imagen'])) ? '' : 'd-none' ?>"
                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 1.5rem;">
 
-                        <div id="placeholder-content" class="text-center <?= ($es_edicion && $noticia['imagen']) ? 'd-none' : '' ?>">
+                        <div id="placeholder-content" class="text-center <?= ($es_edicion && !empty($noticia['imagen'])) ? 'd-none' : '' ?>">
                             <span style="font-size: 2.5rem;">➕</span>
                             <p class="fw-bold mb-0">Añadir portada</p>
                         </div>

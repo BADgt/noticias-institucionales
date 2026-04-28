@@ -170,3 +170,31 @@ body {
     border-color: var(--chipi-apple);
     background-color: var(--chipi-light);
 }
+/* --- ELIMINAR SOLO LA PREVISUALIZACIÓN DE IMAGEN --- */
+
+/* Contenedor del tachito (flota arriba a la derecha de la foto) */
+.image-preview-cleaner {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 50; /* Arriba de la imagen */
+    background-color: white;
+    color: #6c757d; /* Gris suave por defecto */
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12); /* Sombrita pro */
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Efecto hover: se pone rojo solo cuando pasás el mouse */
+.image-preview-cleaner:hover {
+    background-color: #fee2e2; /* Fondo rosa pálido */
+    color: #ef4444; /* Ícono rojo */
+    transform: scale(1.1) rotate(-10deg); /* Se agranda y gira un poquito */
+}

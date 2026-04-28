@@ -24,11 +24,11 @@ if ($page === 'guardar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // --- PROCESAMIENTO DE FORMULARIOS ---
-
 if ($page === 'actualizar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Si tocó "Mandar a revisar", el estado es 'Lista para Validación'
-    // Si tocó "Guardar borrador", el estado sigue siendo 'Borrador'
     $nuevo_estado = ($_POST['accion'] === 'revisar') ? 'Lista para Validación' : 'Borrador';
+    
+    // Capturamos lo que dice el "mensajero" del tachito
+    $borrar_imagen = $_POST['borrar_imagen_actual'] ?? '0';
 
     $resultado = actualizarNoticiaCompleta(
         $conn,
@@ -37,7 +37,8 @@ if ($page === 'actualizar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['resumen'],
         $_POST['contenido'],
         $_FILES['imagen'] ?? null,
-        $nuevo_estado
+        $nuevo_estado,
+        $borrar_imagen // <--- ¡AQUÍ SE LO PASAMOS!
     );
 
     if ($resultado) {

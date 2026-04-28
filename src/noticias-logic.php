@@ -75,20 +75,24 @@ function obtenerHistorialUsuario($conn, $usuario_id) {
 /**
  * Actualiza una noticia existente (mantiene la imagen si no se sube una nueva)
  */
-function actualizarNoticiaCompleta($conn, $id, $titulo, $resumen, $contenido, $imagen_file, $estado) {
-    $nombre_imagen = null;
-
-    // 1. Verificamos si subió una foto nueva
+function actualizarNoticiaCompleta($conn, $id, $titulo, $resumen, $contenido, $imagen_file, $estado, $borrar_imagen = '0') {
+    
+    // 1. ¿Subió una foto nueva? (Prioridad alta)
     if (isset($imagen_file) && $imagen_file['error'] === 0) {
         $ext = pathinfo($imagen_file['name'], PATHINFO_EXTENSION);
         $nombre_imagen = time() . "_" . uniqid() . "." . $ext;
         move_uploaded_file($imagen_file['tmp_name'], "uploads/" . $nombre_imagen);
         
-        // Si hay foto nueva, actualizamos todo incluido el campo imagen
         $stmt = $conn->prepare("UPDATE noticias SET titulo = ?, resumen = ?, descripcion = ?, imagen = ?, estado = ? WHERE id = ?");
         $stmt->bind_param("sssssi", $titulo, $resumen, $contenido, $nombre_imagen, $estado, $id);
-    } else {
-        // Si NO hay foto nueva, actualizamos todo MENOS el campo imagen
+    } 
+    // 2. ¿NO subió nada pero apretó el TACHITO (el mensajero mandó '1')?
+    elseif ($borrar_imagen === '1') {
+        $stmt = $conn->prepare("UPDATE noticias SET titulo = ?, resumen = ?, descripcion = ?, imagen = NULL, estado = ? WHERE id = ?");
+        $stmt->bind_param("ssssi", $titulo, $resumen, $contenido, $estado, $id);
+    } 
+    // 3. ¿NO subió nada y NO tocó el tachito? (Mantenemos la foto vieja)
+    else {
         $stmt = $conn->prepare("UPDATE noticias SET titulo = ?, resumen = ?, descripcion = ?, estado = ? WHERE id = ?");
         $stmt->bind_param("ssssi", $titulo, $resumen, $contenido, $estado, $id);
     }
