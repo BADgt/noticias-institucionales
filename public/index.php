@@ -52,6 +52,21 @@ if ($page === 'procesar-revision' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
+// INICIO PROCESAMIENTO PARA BAJAR NOTICIA
+if ($page === 'bajar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    /* * Reutilizamos la funcion existente cambiarEstadoNoticia.
+     * Forzamos el estado a 'Anulada' para que desaparezca de la vista publica 
+     * pero siga existiendo en el historial del usuario.
+     */
+    cambiarEstadoNoticia($conn, $_POST['noticia_id'], 'Anulada', $_SESSION['usuario_id']);
+    
+    // Redirigimos al usuario a su perfil para que vea reflejado el cambio en su historial
+    header("Location: ?page=perfil&success=baja");
+    exit;
+}
+// FIN PROCESAMIENTO PARA BAJAR NOTICIA
+
 if ($page === 'procesar-registro' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = registrarUsuario($conn, $_POST['nombre'], $_POST['apellido'], $_POST['email'], $_POST['password'], $_POST['roles'] ?? []);
     if ($resultado === true) {

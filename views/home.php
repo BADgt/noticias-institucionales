@@ -1,4 +1,31 @@
 <div class="container py-4">
+
+    <?php 
+    /* * Validamos si la URL contiene el parametro success.
+     * Este parametro es enviado por el archivo index.php tras procesar un formulario.
+     */
+    if (isset($_GET['success'])): 
+    ?>
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4 p-4 mb-4 d-flex align-items-center" role="alert">
+            <div>
+                <h5 class="fw-bold mb-1 text-success">Accion realizada con exito</h5>
+                <p class="mb-0 small text-secondary">
+                    <?php 
+                    /* * Mostramos un mensaje diferente segun el valor recibido.
+                     * success=1 indica una nueva noticia creada.
+                     * success=update indica una noticia editada.
+                     */
+                    if ($_GET['success'] == '1') {
+                        echo "Tu noticia ha sido procesada y guardada correctamente en el sistema.";
+                    } elseif ($_GET['success'] == 'update') {
+                        echo "Los cambios realizados en la publicacion han sido actualizados exitosamente.";
+                    }
+                    ?>
+                </p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="hero-box text-center">
         <h1 class="display-3 fw-bold mb-3 text-white">Chipi 치피 News</h1>
         <p class="lead opacity-90 mb-4 fw-medium text-white">
