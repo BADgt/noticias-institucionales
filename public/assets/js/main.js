@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // --- LÓGICA DEL OJITO (INTACTA) ---
+    // --- LÓGICA DEL OJITO  ---
     const togglePassword = () => {
         const btnToggle = document.getElementById('btnTogglePassword');
         const passwordInput = document.getElementById('passwordInput');
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     togglePassword();
 });
 
-// --- LÓGICA DE IMAGEN (ACTUALIZADA) ---
+// --- LÓGICA DE IMAGEN ---
 function previewImage(input) {
     const preview = document.getElementById('img-preview');
     const placeholder = document.getElementById('placeholder-content');
@@ -58,7 +58,7 @@ function removePreviewImage(event) {
 
     if (input) input.value = ""; 
     
-    // ¡ESTO ES LO NUEVO!: Le avisamos al PHP que el usuario quiere borrar la foto
+    // Le avisamos al PHP que el usuario quiere borrar la foto
     if (inputBorrar) inputBorrar.value = "1";
     
     if (preview) {

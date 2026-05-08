@@ -9,7 +9,7 @@ function e($string) {
 }
 
 /**
- * Función para debuguear rápido (opcional, pero re sirve)
+ * Función para debuguear rápido 
  */
 function dd($data) {
     echo "<pre>";

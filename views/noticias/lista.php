@@ -4,7 +4,7 @@
     </div>
 
     <div class="mb-5">
-        <h2 class="fw-bold text-dark m-0">Novedades 🍏</h2>
+        <h2 class="fw-bold text-dark m-0">Novedades</h2>
         <p class="text-secondary">Enterate de todo lo que pasa en la universidad.</p>
     </div>
 
@@ -44,7 +44,7 @@
             <?php endwhile; ?>
         <?php else: ?>
             <div class="col-12 text-center py-5">
-                <p class="text-muted">Todavía no hay noticias publicadas. ✨</p>
+                <p class="text-muted">Todavía no hay noticias publicadas.</p>
             </div>
         <?php endif; ?>
     </div>

@@ -1,7 +1,7 @@
 <?php
 // Determinamos si estamos editando o creando una nueva
 $es_edicion = isset($noticia);
-$titulo_vista = $es_edicion ? "Editar Noticia ✍️" : "Redactar Noticia ✍️";
+$titulo_vista = $es_edicion ? "Editar Noticia" : "Redactar Noticia";
 $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia";
 ?>
 

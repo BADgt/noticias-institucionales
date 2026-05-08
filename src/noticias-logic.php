@@ -10,9 +10,7 @@ function obtenerNoticiasPublicas($conn) {
     return mysqli_query($conn, $sql);
 }
 
-// ... (Acá abajo deberías tener tus otras funciones que ya tenías, como insertarNoticiaCompleta o obtenerNoticiaParaEditar. No las borres) ...
 function obtenerNoticiaPorId($conn, $id) {
-    // Le quitamos el AND n.estado = 'Publicada' para que el autor pueda ver sus borradores o anuladas
     $stmt = $conn->prepare("SELECT n.*, u.nombre, u.apellido 
                             FROM noticias n 
                             JOIN usuarios u ON n.autor_id = u.id 
@@ -36,7 +34,6 @@ function insertarNoticiaCompleta($conn, $titulo, $resumen, $contenido, $imagen_f
 }
 
 function obtenerMisBorradores($conn, $autor_id) {
-    // Ahora buscamos tanto 'Borrador' como 'Para Corrección'
     $stmt = $conn->prepare("SELECT * FROM noticias 
                             WHERE autor_id = ? 
                             AND (estado = 'Borrador' OR estado = 'Para Corrección') 

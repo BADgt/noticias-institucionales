@@ -27,7 +27,6 @@ if ($page === 'guardar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($page === 'actualizar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $nuevo_estado = ($_POST['accion'] === 'revisar') ? 'Lista para Validación' : 'Borrador';
     
-    // Capturamos lo que dice el "mensajero" del tachito
     $borrar_imagen = $_POST['borrar_imagen_actual'] ?? '0';
 
     $resultado = actualizarNoticiaCompleta(
@@ -38,7 +37,7 @@ if ($page === 'actualizar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['contenido'],
         $_FILES['imagen'] ?? null,
         $nuevo_estado,
-        $borrar_imagen // <--- ¡AQUÍ SE LO PASAMOS!
+        $borrar_imagen 
     );
 
     if ($resultado) {

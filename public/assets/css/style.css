@@ -1,7 +1,7 @@
 :root {
     /* Los colores oficiales de Chipi News */
     --chipi-dark: #1e3d1a;      /* Verde oscuro profundo */
-    --chipi-apple: #84cc16;     /* TU VERDE MANZANA LINDO */
+    --chipi-apple: #84cc16;     /* Mi verde manzana lindo */
     --chipi-light: #f1f8e9;     /* Fonditos claros */
     --body-bg: #f8fafc;
     --text-main: #1e293b;
@@ -13,13 +13,13 @@ body {
     color: var(--text-main);
 }
 
-/* --- LOGO COREANO Y TEXTO CHIPI --- */
+/* --- TEXTO CHIPI --- */
 .text-chipi {
     color: var(--chipi-apple) !important;
     font-weight: 800 !important;
 }
 
-/* --- EL HERO BOX (Gradiente recuperado) --- */
+/* --- EL HERO BOX (Gradiente) --- */
 .hero-box {
     background: linear-gradient(135deg, var(--chipi-dark) 0%, var(--chipi-apple) 100%) !important;
     border-radius: 2rem;
@@ -32,7 +32,7 @@ body {
 
 /* --- TARJETAS DE NOTICIAS (Arreglo del hover fantasma) --- */
 .card-news {
-    position: relative; /* CLAVE: Encierra al stretched-link aquí adentro */
+    position: relative; /* Encierra al stretched-link  */
     background: white;
     border: 0 !important;
     border-radius: 1.5rem;
@@ -61,7 +61,7 @@ body {
     text-decoration: none !important;
     transition: all 0.3s ease-in-out !important;
     display: inline-block;
-    /* Importante: NO tener position: relative aquí para que el link busque la tarjeta */
+    /* Importante: NO tener position: relative acá para que el link busque la tarjeta */
 }
 
 .btn-outline-chipi:hover {
@@ -196,5 +196,5 @@ body {
 .image-preview-cleaner:hover {
     background-color: #fee2e2; /* Fondo rosa pálido */
     color: #ef4444; /* Ícono rojo */
-    transform: scale(1.1) rotate(-10deg); /* Se agranda y gira un poquito */
+    transform: scale(1.1) rotate(-10deg); /* Se agranda y gira poquito */
 }

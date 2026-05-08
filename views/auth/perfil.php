@@ -32,13 +32,11 @@ $historial = obtenerHistorialUsuario($conn, $_SESSION['usuario_id']);
 
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded-5 p-4 bg-white h-100">
-                <h5 class="fw-bold mb-4">Mi Historial Reciente 📂</h5>
+                <h5 class="fw-bold mb-4">Mi Historial Reciente</h5>
                 <div class="list-group list-group-flush">
                     <?php if (mysqli_num_rows($historial) > 0): ?>
                         <?php while ($h = mysqli_fetch_assoc($historial)): ?>
                             <?php
-                            // Decidimos a dónde mandar al usuario según el estado
-                            // Si es borrador, vamos a editar. Si no, a la vista pública.
                             $pagina_destino = ($h['estado'] == 'Borrador') ? 'editar-noticia' : 'noticia';
                             ?>
                             <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center border-bottom bg-transparent">
@@ -68,7 +66,7 @@ $historial = obtenerHistorialUsuario($conn, $_SESSION['usuario_id']);
                         <?php endwhile; ?>
                     <?php else: ?>
                         <div class="text-center py-5">
-                            <p class="text-muted">Todavía no tenés actividad registrada. ✨</p>
+                            <p class="text-muted">Todavía no tenés actividad registrada.</p>
                         </div>
                     <?php endif; ?>
                 </div>

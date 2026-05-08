@@ -67,7 +67,7 @@
 
 <?php else: ?>
     <div class="container py-5 text-center">
-        <h2 class="text-muted">No se pudo encontrar la noticia seleccionada. 🍏</h2>
+        <h2 class="text-muted">No se pudo encontrar la noticia seleccionada.</h2>
         <a href="?page=home" class="btn btn-chipi text-white rounded-pill px-4 mt-3">Ir al Inicio</a>
     </div>
 <?php endif; ?>

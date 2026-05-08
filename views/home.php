@@ -1,6 +1,6 @@
 <div class="container py-4">
     <div class="hero-box text-center">
-        <h1 class="display-3 fw-bold mb-3 text-white">Chipi News 🍏</h1>
+        <h1 class="display-3 fw-bold mb-3 text-white">Chipi 치피 News</h1>
         <p class="lead opacity-90 mb-4 fw-medium text-white">
             <?= isset($_SESSION['usuario_id']) ? "¡Hola, " . e($_SESSION['usuario_nombre']) . "! Bienvenido al portal." : "Las noticias de la UNSL, frescas y verificadas." ?>
         </p>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="mt-5">
-        <h2 class="fw-bold mb-4">Últimas Novedades 🍏</h2>
+        <h2 class="fw-bold mb-4">Últimas Novedades</h2>
         <div class="row g-4">
             <?php
             $noticias_home = obtenerNoticiasPublicas($conn);

@@ -41,7 +41,7 @@
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="3" class="text-center py-5 text-muted">No tenés borradores guardados. ✨</td>
+                            <td colspan="3" class="text-center py-5 text-muted">No tenés borradores guardados.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
