@@ -36,7 +36,7 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Resumen (Bajada)</label>
+                    <label class="form-label fw-bold">Resumen (breve)</label>
                     <textarea name="resumen" class="form-control rounded-4 px-3" rows="2"><?= $es_edicion ? e($noticia['resumen']) : '' ?></textarea>
                 </div>
 
