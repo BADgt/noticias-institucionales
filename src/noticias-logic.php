@@ -61,6 +61,27 @@ function obtenerNoticiasPendientes($conn) {
 }
 
 function cambiarEstadoNoticia($conn, $id, $nuevo_estado, $usuario_id) {
+    /*
+     * BLOQUEO DE SEGURIDAD EN SERVIDOR
+     * Se comprueba la autoria antes de permitir un cambio de estado propio de un validador.
+     * Si el nuevo estado es 'Publicada' o 'Para Corrección', consultamos quien es el dueño.
+     */
+    if ($nuevo_estado === 'Publicada' || $nuevo_estado === 'Para Corrección') {
+        $stmt_autor = $conn->prepare("SELECT autor_id FROM noticias WHERE id = ?");
+        $stmt_autor->bind_param("i", $id);
+        $stmt_autor->execute();
+        $resultado = $stmt_autor->get_result()->fetch_assoc();
+        
+        if ($resultado && $resultado['autor_id'] == $usuario_id) {
+            // Si el ID del autor coincide con el ID del usuario en sesion, se rechaza la operacion.
+            return false; 
+        }
+    }
+
+    /*
+     * EJECUCION DEL CAMBIO DE ESTADO
+     * Si supera la barrera de seguridad, procede con la actualizacion normal en la base de datos.
+     */
     $stmt = $conn->prepare("UPDATE noticias SET estado = ?, fecha_publicacion = IF(? = 'Publicada', NOW(), fecha_publicacion) WHERE id = ?");
     $stmt->bind_param("ssi", $nuevo_estado, $nuevo_estado, $id);
     return $stmt->execute();
