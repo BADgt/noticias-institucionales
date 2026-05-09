@@ -1,8 +1,21 @@
 <?php
-// Determinamos si estamos editando o creando una nueva
+// Determinamos si estamos editando o creando una nueva noticia
 $es_edicion = isset($noticia);
 $titulo_vista = $es_edicion ? "Editar Noticia" : "Redactar Noticia";
 $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia";
+
+// RECUPERACION DE DATOS TEMPORALES
+// Si la validacion falla, recuperamos lo que el usuario habia escrito.
+// Si es una edicion normal, cargamos los datos de la base de datos.
+// Si es una noticia nueva y no hay errores, queda en blanco.
+$val_titulo = $_SESSION['datos_temporales']['titulo'] ?? ($es_edicion ? $noticia['titulo'] : '');
+$val_resumen = $_SESSION['datos_temporales']['resumen'] ?? ($es_edicion ? $noticia['resumen'] : '');
+$val_contenido = $_SESSION['datos_temporales']['contenido'] ?? ($es_edicion ? ($noticia['descripcion'] ?? $noticia['contenido']) : '');
+
+// Limpiamos la memoria para que los datos no queden persistentes en futuras visitas
+if (isset($_SESSION['datos_temporales'])) {
+    unset($_SESSION['datos_temporales']);
+}
 ?>
 
 <div class="row justify-content-center">
@@ -24,6 +37,29 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
         <div class="card border-0 shadow-sm rounded-5 p-5 bg-white">
             <h2 class="fw-bold mb-4"><?= $titulo_vista ?></h2>
 
+            <?php
+            /*
+             * Verificamos si existe el array de errores en la sesion.
+             * Esto sucede si index.php detecto caracteres invalidos y redirigio hacia aqui.
+             */
+            if (isset($_SESSION['errores_noticia'])):
+            ?>
+                <div class="alert alert-danger border-0 rounded-4 small shadow-sm mb-4">
+                    <ul class="mb-0">
+                        <?php foreach ($_SESSION['errores_noticia'] as $error): ?>
+                            <li><?= e($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php
+                /*
+                 * Limpiamos la variable de sesion despues de mostrar los errores.
+                 * Esto evita que el cartel rojo se quede pegado en la pantalla si el usuario recarga la pagina.
+                 */
+                unset($_SESSION['errores_noticia']);
+            endif;
+            ?>
+
             <form action="<?= $accion_url ?>" method="POST" enctype="multipart/form-data">
                 <?php if ($es_edicion): ?>
                     <input type="hidden" name="id" value="<?= $noticia['id'] ?>">
@@ -32,12 +68,12 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
                 <div class="mb-3">
                     <label class="form-label fw-bold">Titulo</label>
                     <input type="text" name="titulo" class="form-control rounded-4 px-3"
-                        value="<?= $es_edicion ? e($noticia['titulo']) : '' ?>" required>
+                        value="<?= e($val_titulo) ?>" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Resumen (breve)</label>
-                    <textarea name="resumen" class="form-control rounded-4 px-3" rows="2"><?= $es_edicion ? e($noticia['resumen']) : '' ?></textarea>
+                    <textarea name="resumen" class="form-control rounded-4 px-3" rows="2"><?= e($val_resumen) ?></textarea>
                 </div>
 
                 <div class="mb-4">
@@ -65,7 +101,7 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Contenido de la Noticia</label>
-                    <textarea name="contenido" class="form-control rounded-4 px-3" rows="8" required><?= $es_edicion ? e($noticia['descripcion'] ?? $noticia['contenido']) : '' ?></textarea>
+                    <textarea name="contenido" class="form-control rounded-4 px-3" rows="8" required><?= e($val_contenido) ?></textarea>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
@@ -120,4 +156,3 @@ $accion_url = $es_edicion ? "?page=actualizar-noticia" : "?page=guardar-noticia"
         </div>
     </div>
 <?php endif; ?>
-</div>

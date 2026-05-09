@@ -5,8 +5,22 @@ function registrarUsuario($conn, $nombre, $apellido, $email, $password, $roles_s
     $errores = [];
     $nombre = trim($nombre); $apellido = trim($apellido); $email = trim($email);
 
+    // 1. Validar campos vacios
     if (empty($nombre) || empty($apellido) || empty($email) || empty($password) || empty($roles_seleccionados)) {
         $errores[] = "Todos los campos son obligatorios.";
+    }
+
+    // 2. Validar formato de nombres
+    if (!empty($nombre) && !esNombreValido($nombre)) {
+        $errores[] = "El nombre contiene caracteres no permitidos. Solo usa letras.";
+    }
+    if (!empty($apellido) && !esNombreValido($apellido)) {
+        $errores[] = "El apellido contiene caracteres no permitidos. Solo usa letras.";
+    }
+
+    // 3. Validar formato de email
+    if (!empty($email) && !esEmailValido($email)) {
+        $errores[] = "El formato del correo electronico no es valido.";
     }
 
     if (empty($errores)) {
@@ -22,7 +36,9 @@ function registrarUsuario($conn, $nombre, $apellido, $email, $password, $roles_s
                 $stmt_rol->execute();
             }
             return true;
-        } else { $errores[] = "Error: El email ya está en uso."; }
+        } else { 
+            $errores[] = "Error: El email ya se encuentra registrado en el sistema."; 
+        }
     }
     return $errores;
 }

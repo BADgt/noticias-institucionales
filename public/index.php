@@ -15,29 +15,93 @@ if (in_array($page, $paginas_privadas) && !isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// --- PROCESAMIENTO ---
+// --- PROCESAMIENTO DE NUEVAS NOTICIAS ---
 if ($page === 'guardar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $titulo = trim($_POST['titulo'] ?? '');
+    $resumen = trim($_POST['resumen'] ?? '');
+    $contenido = trim($_POST['contenido'] ?? '');
+    $errores_noticia = [];
+
+    // 1. Validamos la longitud minima (Ajustado para caracteres coreanos)
+    if (mb_strlen($titulo, 'UTF-8') < 2) {
+        $errores_noticia[] = "El titulo es muy corto. Debe tener al menos 2 caracteres.";
+    }
+    if (mb_strlen($resumen, 'UTF-8') < 5) {
+        $errores_noticia[] = "El resumen es muy corto. Debe tener al menos 5 caracteres.";
+    }
+    if (mb_strlen($contenido, 'UTF-8') < 10) {
+        $errores_noticia[] = "El contenido de la noticia es muy corto. Debe tener al menos 10 caracteres.";
+    }
+
+    // 2. Validamos el formato de los textos (caracteres permitidos)
+    if (!esTextoNoticiaValido($titulo)) {
+        $errores_noticia[] = "El titulo contiene simbolos no permitidos o no contiene letras.";
+    }
+    if (!esTextoNoticiaValido($resumen)) {
+        $errores_noticia[] = "El resumen contiene simbolos no permitidos o no contiene letras.";
+    }
+    if (!esTextoNoticiaValido($contenido)) {
+        $errores_noticia[] = "El contenido contiene simbolos no permitidos o no contiene letras.";
+    }
+
+    // Si hay errores, guardamos los datos en sesion y redirigimos de vuelta
+    if (!empty($errores_noticia)) {
+        $_SESSION['errores_noticia'] = $errores_noticia;
+        $_SESSION['datos_temporales'] = $_POST;
+        header("Location: ?page=nueva-noticia");
+        exit;
+    }
+
+    // Si todo esta bien, guardamos en la base de datos
     $estado = ($_POST['accion'] === 'revisar') ? 'Lista para Validación' : 'Borrador';
-    insertarNoticiaCompleta($conn, $_POST['titulo'], $_POST['resumen'], $_POST['contenido'], $_FILES['imagen'], $estado, $_SESSION['usuario_id']);
+    insertarNoticiaCompleta($conn, $titulo, $resumen, $contenido, $_FILES['imagen'], $estado, $_SESSION['usuario_id']);
     header("Location: ?page=home&success=1");
     exit;
 }
 
-// --- PROCESAMIENTO DE FORMULARIOS ---
+// --- PROCESAMIENTO DE ACTUALIZACION DE NOTICIAS ---
 if ($page === 'actualizar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $titulo = trim($_POST['titulo'] ?? '');
+    $resumen = trim($_POST['resumen'] ?? '');
+    $contenido = trim($_POST['contenido'] ?? '');
+    $id_noticia = $_POST['id'];
+    $errores_noticia = [];
+
+    // 1. Validamos la longitud minima (Ajustado para caracteres coreanos)
+    if (mb_strlen($titulo, 'UTF-8') < 2) {
+        $errores_noticia[] = "El titulo es muy corto. Debe tener al menos 2 caracteres.";
+    }
+    if (mb_strlen($resumen, 'UTF-8') < 5) {
+        $errores_noticia[] = "El resumen es muy corto. Debe tener al menos 5 caracteres.";
+    }
+    if (mb_strlen($contenido, 'UTF-8') < 10) {
+        $errores_noticia[] = "El contenido de la noticia es muy corto. Debe tener al menos 10 caracteres.";
+    }
+
+    // 2. Validamos el formato de los textos
+    if (!esTextoNoticiaValido($titulo)) {
+        $errores_noticia[] = "El titulo contiene simbolos no permitidos o no contiene letras.";
+    }
+    if (!esTextoNoticiaValido($resumen)) {
+        $errores_noticia[] = "El resumen contiene simbolos no permitidos o no contiene letras.";
+    }
+    if (!esTextoNoticiaValido($contenido)) {
+        $errores_noticia[] = "El contenido contiene simbolos no permitidos o no contiene letras.";
+    }
+
+    // Si hay errores, guardamos en sesion y redirigimos al editor
+    if (!empty($errores_noticia)) {
+        $_SESSION['errores_noticia'] = $errores_noticia;
+        header("Location: ?page=editar-noticia&id=" . $id_noticia);
+        exit;
+    }
+
+    // Si todo esta bien, procedemos a actualizar
     $nuevo_estado = ($_POST['accion'] === 'revisar') ? 'Lista para Validación' : 'Borrador';
-    
     $borrar_imagen = $_POST['borrar_imagen_actual'] ?? '0';
 
     $resultado = actualizarNoticiaCompleta(
-        $conn,
-        $_POST['id'],
-        $_POST['titulo'],
-        $_POST['resumen'],
-        $_POST['contenido'],
-        $_FILES['imagen'] ?? null,
-        $nuevo_estado,
-        $borrar_imagen 
+        $conn, $id_noticia, $titulo, $resumen, $contenido, $_FILES['imagen'] ?? null, $nuevo_estado, $borrar_imagen 
     );
 
     if ($resultado) {
@@ -54,13 +118,13 @@ if ($page === 'procesar-revision' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // INICIO PROCESAMIENTO PARA BAJAR NOTICIA
 if ($page === 'bajar-noticia' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    
+
     /* * Reutilizamos la funcion existente cambiarEstadoNoticia.
      * Forzamos el estado a 'Anulada' para que desaparezca de la vista publica 
      * pero siga existiendo en el historial del usuario.
      */
     cambiarEstadoNoticia($conn, $_POST['noticia_id'], 'Anulada', $_SESSION['usuario_id']);
-    
+
     // Redirigimos al usuario a su perfil para que vea reflejado el cambio en su historial
     header("Location: ?page=perfil&success=baja");
     exit;
